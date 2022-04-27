@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 require('dotenv').config();
+const logEvents = require('./logger');
 
 const db = require('./db');
 const config = require('./config');
