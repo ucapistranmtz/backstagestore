@@ -1,6 +1,6 @@
 const logger = require('../logger');
 exports.success = function (req, res, message, status) {
-  res.status(status || 200).send({ error: '', body: message });
+  res.status(status || 200).send({ error: '', body: message, pid: process.pid });
 };
 
 exports.error = function (req, res, message, status) {

@@ -1,9 +1,13 @@
+const cluster = require('cluster');
+const os = require('os');
+
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 require('dotenv').config();
-const logEvents = require('./logger');
+
+const numCpu = os.cpus().length;
 
 const db = require('./db');
 const config = require('./config');
@@ -21,6 +25,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 router(app);
 app.use(express.static('public'));
 
-app.listen(config.backendPort, function () {
-  console.log(`Listening on port ${config.backendPort}`);
-});
+if (cluster.isMaster) {
+  for (let i = 0; i < numCpu; i++) {
+    cluster.fork(); //!create new nodejs instsance
+  }
+} else {
+  app.listen(config.backendPort, function () {
+    console.log(`${process.pid} Listening on port ${config.backendPort}`);
+  });
+}
